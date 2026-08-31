@@ -21,6 +21,7 @@ export default function App() {
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [chatReferencedPhoto, setChatReferencedPhoto] = useState<Photo | null>(null);
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+  const [saveToast, setSaveToast] = useState<string | null>(null);
 
   // Active filter by landmark IDs (from map interaction)
   const [activeLandmarkFilter, setActiveLandmarkFilter] = useState<string | null>(null);
@@ -208,80 +209,75 @@ export default function App() {
               </button>
               
               {/* Filter Panel Card */}
-              <div className={`${isMobileFiltersOpen ? 'block' : 'hidden lg:block'} bg-[#0c0c0c] border border-white/10 rounded-xs shadow-sm p-5 space-y-5`}>
-                <div className="flex items-center justify-between border-b border-white/10 pb-3">
-                  <h2 className="text-xs font-mono uppercase tracking-wider text-white/40 font-bold flex items-center gap-1.5">
-                    <Filter className="w-4 h-4 text-[#c5b358]" />
-                    Archive Filters
-                  </h2>
-                  {isAnyFilterActive && (
-                    <button
-                      onClick={handleClearAllFilters}
-                      className="text-[10px] font-mono text-[#c5b358] hover:text-[#c5b358]/80 underline cursor-pointer"
-                    >
-                      Clear All
-                    </button>
-                  )}
-                </div>
-
-                {/* Keyword Search */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono text-white/40 uppercase block font-bold">
-                    Search Ledger
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder="Title, tag, name, ID, place..."
-                      className="w-full bg-[#111] border border-white/10 focus:border-[#c5b358] focus:ring-1 focus:ring-[#c5b358] rounded-xs pl-9 pr-3 py-2 text-xs outline-none text-white placeholder-white/30 shadow-inner"
-                    />
-                    <Search className="w-3.5 h-3.5 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
-                  </div>
-                </div>
-
-                {/* Landmark Filter Active Status (from map) */}
-                {activeLandmarkFilter && (
-                  <div className="bg-[#c5b358]/10 border border-[#c5b358]/20 p-2.5 rounded-xs text-xs flex items-center justify-between">
-                    <span className="font-mono text-white">
-                      Map Area: <span className="font-serif italic text-[#c5b358] capitalize">{activeLandmarkFilter.replace('-', ' ')}</span>
-                    </span>
-                    <button 
-                      onClick={() => {
-                        setActiveLandmarkFilter(null);
-                        setLandmarkFilterIds([]);
-                      }}
-                      className="text-white/40 hover:text-white text-[10px] font-mono cursor-pointer"
-                    >
-                      ✕ Remove
-                    </button>
+              <div className={`${isMobileFiltersOpen ? 'block' : 'hidden lg:block'} bg-[#0c0c0c] border border-white/10 rounded-xs shadow-md p-5 space-y-6 relative`}>
+                
+                {/* Simulated Success Toast */}
+                {saveToast && (
+                  <div className="absolute top-2 left-2 right-2 bg-[#c5b358] text-[#050505] text-[10px] font-mono px-3 py-2 rounded-xs shadow-lg border border-white/10 z-20 flex items-center justify-between animate-fade-in">
+                    <span>{saveToast}</span>
+                    <button onClick={() => setSaveToast(null)} className="font-bold hover:opacity-80 ml-1">✕</button>
                   </div>
                 )}
 
-                {/* Specific Location Selector */}
-                <div className="space-y-1.5">
-                  <label className="text-[10px] font-mono text-white/40 uppercase block font-bold">
-                    Specific Site / Landmark
-                  </label>
-                  <select
-                    value={selectedLocation}
-                    onChange={(e) => setSelectedLocation(e.target.value)}
-                    className="w-full bg-[#111] border border-white/10 focus:border-[#c5b358] focus:ring-1 focus:ring-[#c5b358] rounded-xs px-3 py-2 text-xs outline-none text-white cursor-pointer"
-                  >
-                    {uniqueLocations.map((loc) => (
-                      <option key={loc} value={loc} className="bg-[#0c0c0c] text-white">
-                        {loc === 'All' ? '📍 All Hamilton Sites' : `📍 ${loc}`}
-                      </option>
-                    ))}
-                  </select>
+                {/* Header Controls */}
+                <div className="flex flex-col gap-2 pb-3 border-b border-white/10">
+                  <div className="flex items-center justify-between">
+                    <h2 className="text-xs font-mono uppercase tracking-wider text-white/40 font-bold flex items-center gap-1.5">
+                      <Filter className="w-4 h-4 text-[#c5b358]" />
+                      Archive Filters
+                    </h2>
+                  </div>
+                  <div className="grid grid-cols-2 gap-1.5 mt-1">
+                    <button
+                      onClick={handleClearAllFilters}
+                      disabled={!isAnyFilterActive}
+                      className={`text-[10px] font-mono py-1.5 px-2 rounded-xs border text-center transition-all ${
+                        isAnyFilterActive
+                          ? 'bg-[#111] text-[#c5b358] border-[#c5b358]/30 hover:bg-[#c5b358]/10 cursor-pointer'
+                          : 'bg-[#111]/40 text-white/20 border-white/5 cursor-not-allowed'
+                      }`}
+                    >
+                      Clear All
+                    </button>
+                    <button
+                      onClick={() => {
+                        setSaveToast("Search parameters saved successfully to local ledger.");
+                        setTimeout(() => setSaveToast(null), 3500);
+                      }}
+                      className="text-[10px] font-mono bg-[#c5b358] text-[#050505] py-1.5 px-2 rounded-xs border border-[#c5b358] text-center font-bold hover:bg-[#c5b358]/90 transition-all cursor-pointer"
+                    >
+                      Save Search
+                    </button>
+                  </div>
                 </div>
 
-                {/* Date Range Selection */}
-                <div className="space-y-2.5">
-                  <label className="text-[10px] font-mono text-white/40 uppercase block font-bold">
-                    Date Range Timeline
-                  </label>
+                {/* GROUP 1: Keywords */}
+                <div className="bg-[#111]/30 p-3 rounded-xs border border-white/5 space-y-2">
+                  <span className="text-[9px] font-mono uppercase text-[#c5b358] tracking-widest font-bold block">
+                    01 // Keywords
+                  </span>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-mono text-white/40 uppercase block">
+                      Search Ledger
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        placeholder="Title, tag, name, ID, place..."
+                        className="w-full bg-[#111] border border-white/10 focus:border-[#c5b358] focus:ring-1 focus:ring-[#c5b358] rounded-xs pl-9 pr-3 py-2 text-xs outline-none text-white placeholder-white/30 shadow-inner"
+                      />
+                      <Search className="w-3.5 h-3.5 text-white/30 absolute left-3 top-1/2 -translate-y-1/2" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* GROUP 2: Date Range Timeline */}
+                <div className="bg-[#111]/30 p-3 rounded-xs border border-white/5 space-y-3">
+                  <span className="text-[9px] font-mono uppercase text-[#c5b358] tracking-widest font-bold block">
+                    02 // Date Range
+                  </span>
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <span className="text-[9px] font-mono text-white/30 block">Start Year</span>
@@ -312,84 +308,131 @@ export default function App() {
                   {/* Historical Eras Quick Presets */}
                   <div className="pt-1.5">
                     <span className="text-[9px] font-mono text-white/30 block mb-1.5 uppercase">Archival Era Shortcuts</span>
-                    <div className="flex flex-wrap gap-1">
+                    <div className="flex flex-col gap-1.5">
                       <button
                         onClick={() => handleEraClick('victorian')}
-                        className={`text-[9px] font-mono px-2 py-1 rounded-full border cursor-pointer transition-all ${
+                        className={`text-[10px] font-mono w-full px-3 py-1.5 rounded-full border cursor-pointer transition-all ${
                           startYear === 1880 && endYear === 1900
-                            ? 'bg-[#c5b358] text-[#080808] border-[#c5b358] font-bold'
-                            : 'bg-[#111] text-white/60 border-white/10 hover:text-white'
+                            ? 'border-[#c5b358] bg-[#c5b358] text-[#050505] font-bold'
+                            : 'border-[#c5b358]/40 text-[#c5b358] hover:border-[#c5b358]'
                         }`}
                       >
-                        Victorian (1880-1900)
+                        Victorian (1880–1900)
                       </button>
                       <button
                         onClick={() => handleEraClick('edwardian')}
-                        className={`text-[9px] font-mono px-2 py-1 rounded-full border cursor-pointer transition-all ${
+                        className={`text-[10px] font-mono w-full px-3 py-1.5 rounded-full border cursor-pointer transition-all ${
                           startYear === 1901 && endYear === 1914
-                            ? 'bg-[#c5b358] text-[#080808] border-[#c5b358] font-bold'
-                            : 'bg-[#111] text-white/60 border-white/10 hover:text-white'
+                            ? 'border-[#c5b358] bg-[#c5b358] text-[#050505] font-bold'
+                            : 'border-[#c5b358]/40 text-[#c5b358] hover:border-[#c5b358]'
                         }`}
                       >
-                        Edwardian (1901-1914)
+                        Edwardian (1901–1914)
                       </button>
                       <button
                         onClick={() => handleEraClick('interwar')}
-                        className={`text-[9px] font-mono px-2 py-1 rounded-full border cursor-pointer transition-all ${
+                        className={`text-[10px] font-mono w-full px-3 py-1.5 rounded-full border cursor-pointer transition-all ${
                           startYear === 1915 && endYear === 1939
-                            ? 'bg-[#c5b358] text-[#080808] border-[#c5b358] font-bold'
-                            : 'bg-[#111] text-white/60 border-white/10 hover:text-white'
+                            ? 'border-[#c5b358] bg-[#c5b358] text-[#050505] font-bold'
+                            : 'border-[#c5b358]/40 text-[#c5b358] hover:border-[#c5b358]'
                         }`}
                       >
-                        Interwar/Deco (1915-1939)
+                        Interwar / Art Deco
                       </button>
                       <button
                         onClick={() => handleEraClick('postwar')}
-                        className={`text-[9px] font-mono px-2 py-1 rounded-full border cursor-pointer transition-all ${
+                        className={`text-[10px] font-mono w-full px-3 py-1.5 rounded-full border cursor-pointer transition-all ${
                           startYear === 1940 && endYear === 1950
-                            ? 'bg-[#c5b358] text-[#080808] border-[#c5b358] font-bold'
-                            : 'bg-[#111] text-white/60 border-white/10 hover:text-white'
+                            ? 'border-[#c5b358] bg-[#c5b358] text-[#050505] font-bold'
+                            : 'border-[#c5b358]/40 text-[#c5b358] hover:border-[#c5b358]'
                         }`}
                       >
-                        Post-War (1940-1950)
+                        Post-War (1940–1950)
                       </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Historical Category Filter */}
-                <div className="space-y-2">
-                  <label className="text-[10px] font-mono text-white/40 uppercase block font-bold">
-                    Category Selection
-                  </label>
-                  <div className="flex flex-col gap-1.5">
-                    {ALL_CATEGORIES.map((category) => {
-                      const getMappedLabel = (cat: string) => {
-                        switch (cat) {
-                          case 'All': return '📁 All Records';
-                          case 'Historic Estates & Architecture': return '🏛️ Historical Buildings';
-                          case 'Civic Life & People': return '👥 Community & Notable Figures';
-                          case 'Transit & Streets': return '🚃 Transit & Streets';
-                          case 'Industry & Business': return '🏭 Industry & Business';
-                          case 'Parks & Nature': return '🌳 Parks, Waterfalls & Lakes';
-                          default: return cat;
-                        }
-                      };
-                      return (
-                        <button
-                          key={category}
-                          onClick={() => setSelectedCategory(category)}
-                          className={`text-left text-xs px-3 py-2 rounded-xs transition-all duration-155 flex items-center justify-between border cursor-pointer ${
-                            selectedCategory === category
-                              ? 'bg-[#c5b358] border-[#c5b358] text-[#080808] font-bold'
-                              : 'bg-[#111] border-white/10 text-white/70 hover:bg-white/5 hover:text-white'
-                          }`}
-                        >
-                          <span>{getMappedLabel(category)}</span>
-                          {selectedCategory === category && <span className="w-1.5 h-1.5 rounded-full bg-[#080808]"></span>}
-                        </button>
-                      );
-                    })}
+                {/* GROUP 3: Geographic Location */}
+                <div className="bg-[#111]/30 p-3 rounded-xs border border-white/5 space-y-2">
+                  <span className="text-[9px] font-mono uppercase text-[#c5b358] tracking-widest font-bold block">
+                    03 // Location
+                  </span>
+                  
+                  {/* Landmark Filter Active Status (from map) */}
+                  {activeLandmarkFilter && (
+                    <div className="bg-[#c5b358]/10 border border-[#c5b358]/20 p-2 text-[11px] flex items-center justify-between rounded-xs mb-1">
+                      <span className="font-mono text-white truncate max-w-[130px]">
+                        Map: <span className="font-serif italic text-[#c5b358] capitalize">{activeLandmarkFilter.replace('-', ' ')}</span>
+                      </span>
+                      <button 
+                        onClick={() => {
+                          setActiveLandmarkFilter(null);
+                          setLandmarkFilterIds([]);
+                        }}
+                        className="text-white/40 hover:text-white font-bold cursor-pointer ml-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-mono text-white/40 uppercase block">
+                      Specific Site / Landmark
+                    </label>
+                    <select
+                      value={selectedLocation}
+                      onChange={(e) => setSelectedLocation(e.target.value)}
+                      className="w-full bg-[#111] border border-white/10 focus:border-[#c5b358] focus:ring-1 focus:ring-[#c5b358] rounded-xs px-3 py-2 text-xs outline-none text-white cursor-pointer"
+                    >
+                      {uniqueLocations.map((loc) => (
+                        <option key={loc} value={loc} className="bg-[#0c0c0c] text-white">
+                          {loc === 'All' ? '📍 All Hamilton Sites' : `📍 ${loc}`}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* GROUP 4: Archival Category */}
+                <div className="bg-[#111]/30 p-3 rounded-xs border border-white/5 space-y-2">
+                  <span className="text-[9px] font-mono uppercase text-[#c5b358] tracking-widest font-bold block">
+                    04 // Category
+                  </span>
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-mono text-white/40 uppercase block">
+                      Category Selection
+                    </label>
+                    <div className="flex flex-col gap-1.5">
+                      {ALL_CATEGORIES.map((category) => {
+                        const getMappedLabel = (cat: string) => {
+                          switch (cat) {
+                            case 'All': return '📁 All Records';
+                            case 'Historic Estates & Architecture': return '🏛️ Historical Buildings';
+                            case 'Civic Life & People': return '👥 Community & Notable Figures';
+                            case 'Transit & Streets': return '🚃 Transit & Streets';
+                            case 'Industry & Business': return '🏭 Industry & Business';
+                            case 'Parks & Nature': return '🌳 Parks, Waterfalls & Lakes';
+                            default: return cat;
+                          }
+                        };
+                        return (
+                          <button
+                            key={category}
+                            onClick={() => setSelectedCategory(category)}
+                            className={`text-left text-xs px-3 py-2 rounded-xs transition-all duration-155 flex items-center justify-between border cursor-pointer ${
+                              selectedCategory === category
+                                ? 'bg-[#c5b358] border-[#c5b358] text-[#080808] font-bold'
+                                : 'bg-[#111] border-white/10 text-white/70 hover:bg-white/5 hover:text-white'
+                            }`}
+                          >
+                            <span>{getMappedLabel(category)}</span>
+                            {selectedCategory === category && <span className="w-1.5 h-1.5 rounded-full bg-[#080808]"></span>}
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 

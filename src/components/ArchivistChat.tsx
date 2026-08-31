@@ -12,7 +12,7 @@ export default function ArchivistChat({ referencedPhoto, onClearReference }: Arc
     {
       id: 'welcome',
       role: 'model',
-      content: "Welcome, seeker of histories. I am Arthur Henderson, Lead Archivist here at the Hamilton Public Library Special Collections. My life has been dedicated to cataloging and preserving the visual ledger of our remarkable city—from its early electric streetcars to the thunder of its steel foundries and waterfalls.\n\nHow can I help you explore Hamilton's rich history today? If there is a particular photograph you are studying, feel free to ask me to analyze its secrets or tell its tale.",
+      content: "Ask Arthur about Hamilton’s streets, bridges, railways, and landmarks. He can reference any photo you’re viewing. Welcome, seeker of histories. I am Arthur Henderson, Lead Archivist here at the Hamilton City Libraries Heritage Collection. How can I help you explore Hamilton's rich history today? If there is a particular photograph you are studying, feel free to ask me to analyze its secrets or tell its tale.",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
@@ -89,20 +89,16 @@ export default function ArchivistChat({ referencedPhoto, onClearReference }: Arc
   // Preset inquiries to help user explore
   const PRESET_INQUIRIES = [
     {
-      label: "Why is Hamilton 'The Ambitious City'?",
-      text: "Can you explain why Hamilton, Ontario acquired the nickname 'The Ambitious City'? What is the historical origin of this moniker?"
+      label: "Victoria Street History",
+      text: "What’s the history of Victoria Street and early settler commerce?"
     },
     {
-      label: "The Great 1946 Steel Strike",
-      text: "Tell me about the famous 1946 Steel Strike in Hamilton. Why was it a watershed moment for Canadian labour rights?"
+      label: "Waikato River Bridges",
+      text: "Tell me about the history of the Victoria, Claudelands, and Fairfield bridges over the Waikato River."
     },
     {
-      label: "Dundurn Castle Secret Tunnels",
-      text: "Are there secret underground tunnels or escape routes beneath Dundurn Castle? Tell me about the architecture of Allan MacNab's estate."
-    },
-    {
-      label: "Hamilton Incline Railways history",
-      text: "How did the Mount Hamilton Incline Railways work? Why were they built, and what eventually happened to them?"
+      label: "Garden Place & Carnegie Library",
+      text: "What was Garden Place like before the hill was excavated in 1940?"
     }
   ];
 
@@ -132,12 +128,30 @@ export default function ArchivistChat({ referencedPhoto, onClearReference }: Arc
     });
   };
 
+  // Highlights historical places and eras into beautiful inline badges
+  const highlightHistoricalTerms = (rawText: string): string => {
+    let text = rawText;
+    
+    // Target Eras & Specific Decades or Year Ranges
+    const eraRegex = /\b(1880[–-]1900|1901[–-]1914|1915[–-]1939|1940[–-]1950|Victorian|Edwardian|Interwar|Post-War|Post-war)\b/g;
+    text = text.replace(eraRegex, '<span class="inline-flex items-center rounded-xs bg-yellow-500/10 border border-yellow-500/40 px-1.5 py-0.5 text-[10px] font-mono text-yellow-300 font-semibold mx-0.5">$1</span>');
+
+    // Target Places
+    const placeRegex = /\b(Victoria Street|Waikato River|Garden Place|Carnegie Library|Claudelands Bridge|Fairfield Bridge|Victoria Bridge|Frankton Junction|Lake Rotoroa|Hamilton Lake|Hockin House|Ferry Bank|Matangi|Waikato Times|Gore Park|Dundurn Castle)\b/g;
+    text = text.replace(placeRegex, '<span class="inline-flex items-center rounded-xs bg-[#c5b358]/10 border border-[#c5b358]/30 px-1.5 py-0.5 text-[11px] font-serif text-[#c5b358] font-bold mx-0.5">$1</span>');
+
+    return text;
+  };
+
   // Small parser helper for **bold** and *italic*
   const parseBoldItalic = (rawText: string): string => {
     let html = rawText
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
+    
+    // Highlight places and eras with beautiful inline badges
+    html = highlightHistoricalTerms(html);
     
     // Bold: **text**
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold text-[#c5b358]">$1</strong>');

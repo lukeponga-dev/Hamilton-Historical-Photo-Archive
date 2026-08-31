@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Photo, AudioNarrativeResponse } from '../types';
-import { X, Volume2, VolumeX, MapPin, Camera, Calendar, Hash, HelpCircle, ArrowRight, Play, Pause, Loader2 } from 'lucide-react';
+import { X, Volume2, VolumeX, MapPin, Camera, Calendar, Hash, HelpCircle, ArrowRight, Play, Pause, Loader2, ExternalLink } from 'lucide-react';
 
 interface PhotoDetailModalProps {
   photo: Photo;
@@ -10,6 +10,14 @@ interface PhotoDetailModalProps {
 
 export default function PhotoDetailModal({ photo, onClose, onConsultArthur }: PhotoDetailModalProps) {
   const [imageFilter, setImageFilter] = useState<'sepia' | 'monochrome' | 'original'>('sepia');
+
+  // Compute Era Label based on year for authentic NZ historical cataloging
+  const getEraLabel = (year: number) => {
+    if (year >= 1880 && year <= 1900) return 'Victorian Era (1880–1900)';
+    if (year >= 1901 && year <= 1914) return 'Edwardian Era (1901–1914)';
+    if (year >= 1915 && year <= 1939) return 'Interwar / Art Deco';
+    return 'Post-War Era (1940–1950)';
+  };
   
   // Audio narration states
   const [isPlaying, setIsPlaying] = useState(false);
@@ -187,119 +195,144 @@ export default function PhotoDetailModal({ photo, onClose, onConsultArthur }: Ph
 
         {/* Right Area: Historical Ledger Info & Interactive AI Audio */}
         <div className="w-full md:w-[45%] p-5 md:p-8 overflow-y-auto flex flex-col justify-between max-h-[50vh] md:max-h-none gap-6 text-[#e5e5e5]">
-          <div className="space-y-5">
-            {/* Header: Decade and Title */}
-            <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="text-[10px] font-mono tracking-widest uppercase bg-[#c5b358]/10 text-[#c5b358] border border-[#c5b358]/20 px-2 py-0.5 rounded-xs font-bold">
-                  {photo.category}
-                </span>
-                <span className="text-xs text-white/40 font-mono">
-                  {photo.decade}
-                </span>
-              </div>
+          <div className="space-y-6">
+            
+            {/* Top Stacked Layout: Title, Location, Era, Accession Number */}
+            <div className="space-y-3 pb-5 border-b border-white/10">
+              <span className="text-[9px] font-mono tracking-widest uppercase bg-[#c5b358]/10 text-[#c5b358] border border-[#c5b358]/20 px-2 py-0.5 rounded-xs font-bold inline-block">
+                {photo.category}
+              </span>
+              
               <h2 className="text-2xl font-serif font-light text-white leading-tight">
                 {photo.title}
               </h2>
-            </div>
 
-            {/* dynamic spoken narration audio section */}
-            <div className="bg-[#111] border border-white/10 rounded-xs p-4 shadow-xs">
-              <div className="flex items-start gap-3">
-                <div className="p-2.5 bg-[#c5b358] text-[#080808] rounded-full shrink-0 shadow-sm">
-                  {isPlaying ? (
-                    <Volume2 className="w-4 h-4 animate-bounce" />
-                  ) : (
-                    <VolumeX className="w-4 h-4" />
-                  )}
+              <div className="space-y-2 pt-1">
+                {/* Location */}
+                <div className="flex items-center gap-1.5 text-xs text-white/85">
+                  <MapPin className="w-3.5 h-3.5 text-[#c5b358] shrink-0" />
+                  <span>{photo.locationName}</span>
                 </div>
-                <div className="flex-1">
-                  <h4 className="text-xs font-serif font-light text-white">
-                    Arthur's Voice Narration (AI Speech)
-                  </h4>
-                  <p className="text-[11px] text-[#a1a1a1] mt-0.5 leading-relaxed">
-                    Listen to Arthur read this photograph's archival history using advanced text-to-speech.
+
+                {/* Era */}
+                <div>
+                  <span className="inline-flex items-center rounded-full border border-yellow-500/60 px-2.5 py-0.5 text-xs text-yellow-300 font-mono">
+                    {getEraLabel(photo.year)}
+                  </span>
+                </div>
+
+                {/* Accession Number & Heritage Online Link */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-0.5">
+                  <p className="text-[11px] font-mono text-white/40">
+                    Accession Number: <span className="text-white/60">{photo.accessionNo}</span>
                   </p>
-
-                  <div className="mt-3 flex items-center gap-3">
-                    <button
-                      onClick={handleToggleAudio}
-                      disabled={isLoadingAudio}
-                      className="flex items-center justify-center gap-2 px-4 py-2 bg-[#c5b358] text-[#080808] text-[10px] font-mono font-bold uppercase tracking-widest rounded-xs hover:bg-[#c5b358]/90 transition-colors disabled:opacity-40 shrink-0 shadow border border-[#c5b358] cursor-pointer"
+                  {photo.heritageUrl && (
+                    <a
+                      href={photo.heritageUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] font-mono text-[#c5b358] hover:text-[#c5b358]/80 hover:underline transition-colors"
                     >
-                      {isLoadingAudio ? (
-                        <>
-                          <Loader2 className="w-3.5 h-3.5 animate-spin text-[#080808]" />
-                          Narrating...
-                        </>
-                      ) : isPlaying ? (
-                        <>
-                          <Pause className="w-3.5 h-3.5 fill-[#080808]" />
-                          Pause Arthur
-                        </>
-                      ) : (
-                        <>
-                          <Play className="w-3.5 h-3.5 fill-[#080808]" />
-                          Listen to Arthur
-                        </>
-                      )}
-                    </button>
-
-                    <div className="flex-1 text-[10px] font-mono text-white/40 italic truncate">
-                      {isLoadingAudio 
-                        ? "Arthur is retrieving his catalog notes..." 
-                        : isPlaying 
-                          ? "Playing voice narration..." 
-                          : "Audio ledger ready"}
-                    </div>
-                  </div>
-
-                  {audioError && (
-                    <p className="text-[10px] text-red-400 font-mono mt-2 bg-red-950/20 p-1.5 rounded border border-red-900/40">
-                      Note: {audioError}
-                    </p>
+                      <span>Hamilton Heritage Online</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
                   )}
                 </div>
               </div>
             </div>
 
-            {/* Description */}
-            <div className="space-y-3.5 border-t border-white/10 pt-4">
-              <h4 className="text-[10px] font-mono uppercase tracking-wider text-white/40 font-bold">
-                Archival Ledger Record
+            {/* Story Section */}
+            <div className="space-y-2">
+              <h4 className="text-[10px] font-mono uppercase tracking-wider text-[#c5b358] font-bold">
+                Story
               </h4>
               <p className="text-xs text-[#a1a1a1] leading-relaxed font-sans">
                 {photo.description}
               </p>
             </div>
 
-            {/* Curator note */}
-            <div className="border-l-2 border-[#c5b358] pl-3 py-1 bg-[#c5b358]/10">
-              <span className="text-[10px] uppercase font-mono tracking-wider text-[#c5b358] font-bold block mb-1">
-                Historical Significance Note
-              </span>
-              <p className="text-xs text-white italic leading-relaxed">
-                "{photo.historicalFact}"
-              </p>
+            {/* Context Section */}
+            <div className="space-y-2 pt-1">
+              <h4 className="text-[10px] font-mono uppercase tracking-wider text-[#c5b358] font-bold">
+                Context
+              </h4>
+              <div className="bg-[#111] p-3.5 rounded-xs border border-white/5 space-y-3">
+                <p className="text-xs text-white italic leading-relaxed">
+                  "{photo.historicalFact}"
+                </p>
+                <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-white/40 pt-2 border-t border-white/5">
+                  <div>
+                    <span className="block text-[8px] uppercase tracking-wide text-white/20">Photographer</span>
+                    <span className="text-white/70">{photo.photographer}</span>
+                  </div>
+                  <div>
+                    <span className="block text-[8px] uppercase tracking-wide text-white/20">Decade</span>
+                    <span className="text-white/70">{photo.decade}</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            {/* Geographic & Camera Metadata */}
-            <div className="border-t border-white/10 pt-4 grid grid-cols-2 gap-4 text-xs font-mono">
-              <div className="space-y-1">
-                <span className="text-white/40 text-[10px] block uppercase">Location Site</span>
-                <span className="text-white font-serif font-semibold flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5 text-[#c5b358]" />
-                  {photo.locationName}
-                </span>
+            {/* Listen to Arthur Narrator Button & Playback State */}
+            <div className="bg-[#111]/60 border border-white/10 rounded-xs p-4 shadow-inner space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#c5b358]/10 text-[#c5b358] rounded-full shrink-0 border border-[#c5b358]/20">
+                  {isPlaying ? (
+                    <Volume2 className="w-4 h-4 animate-pulse" />
+                  ) : (
+                    <VolumeX className="w-4 h-4 text-white/40" />
+                  )}
+                </div>
+                <div>
+                  <h4 className="text-xs font-serif font-light text-white">
+                    Listen to Arthur
+                  </h4>
+                  <p className="text-[10px] text-white/40 font-mono">
+                    Spoken commentary on this record's era
+                  </p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <span className="text-white/40 text-[10px] block uppercase">Photographer</span>
-                <span className="text-white flex items-center gap-1 font-serif">
-                  <Camera className="w-3.5 h-3.5 text-[#c5b358]" />
-                  {photo.photographer}
-                </span>
+
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleToggleAudio}
+                  disabled={isLoadingAudio}
+                  className="flex items-center justify-center gap-2 px-4 py-2 bg-[#c5b358] text-[#080808] text-[10px] font-mono font-bold uppercase tracking-widest rounded-xs hover:bg-[#c5b358]/90 transition-all disabled:opacity-40 shrink-0 shadow border border-[#c5b358] cursor-pointer"
+                >
+                  {isLoadingAudio ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin text-[#080808]" />
+                      Narrating...
+                    </>
+                  ) : isPlaying ? (
+                    <>
+                      <Pause className="w-3.5 h-3.5 fill-[#080808]" />
+                      Pause
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3.5 h-3.5 fill-[#080808]" />
+                      Listen to Arthur
+                    </>
+                  )}
+                </button>
+
+                <div className="flex-1 text-[10px] font-mono text-white/40 italic truncate">
+                  {isLoadingAudio 
+                    ? "Consulting museum registry..." 
+                    : isPlaying 
+                      ? "Narrating historical significance..." 
+                      : "Arthur's commentary loaded"}
+                </div>
               </div>
+
+              {audioError && (
+                <p className="text-[10px] text-red-400 font-mono mt-2 bg-red-950/20 p-1.5 rounded border border-red-900/40">
+                  Note: {audioError}
+                </p>
+              )}
             </div>
+
           </div>
 
           {/* Action button: Consult Arthur about this photo */}

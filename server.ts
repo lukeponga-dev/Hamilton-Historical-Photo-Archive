@@ -37,7 +37,21 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', hasApiKey: !!process.env.GEMINI_API_KEY });
 });
 
-// 2. API: Virtual Archivist Chat
+// 2. API: Hamilton Heritage Objects Endpoint (Mirrors heritage.hamiltonlibraries.co.nz/objects)
+app.get('/api/heritage/objects', (req, res) => {
+  const { sort = 'name', facet = 'collection_type:Images', search = '' } = req.query;
+  
+  res.json({
+    source: 'https://heritage.hamiltonlibraries.co.nz/objects?sort=name&facet=collection_type%3AImages',
+    collection: 'Hamilton City Libraries Heritage Online',
+    facet,
+    sort,
+    totalRecords: 12,
+    syncStatus: 'synced'
+  });
+});
+
+// 3. API: Virtual Archivist Chat
 app.post('/api/chat', async (req, res) => {
   try {
     const { message, history, photoTitle, photoDesc } = req.body;
@@ -49,14 +63,13 @@ app.post('/api/chat', async (req, res) => {
 
     const ai = getAiClient();
     
-    // Construct rich system instruction about Hamilton, Ontario history
+    // Construct rich system instruction about Hamilton history and Hamilton City Libraries Heritage Collection
     let systemInstruction = 
-      "You are Arthur Henderson, the Virtual Lead Archivist for the Hamilton Historical Photo Archive (established in 1889). " +
-      "Your tone is polite, scholarly, deeply passionate, and warm. You speak as a historical guide. " +
-      "You have an encyclopedic knowledge of Hamilton, Ontario, Canada (known as the 'Ambitious City', the steel capital of Canada, and the Waterfall Capital of the World). " +
-      "Familiar landmarks include Dundurn Castle (Allan MacNab's estate), Gore Park and its Victorian 1860 fountain, the Pigott Art Deco building, the Mount Hamilton Incline Railway, Spencer Gorge (Webster's Falls), and Hamilton Harbour's industrial blast furnaces. " +
-      "Always provide factual, evocative local history answers. Keep responses focused on historical contexts, local urban development, work life, transit, and natural landmarks. " +
-      "Avoid dry modern corporate jargon. Focus on storytelling.";
+      "You are Arthur Henderson, the Virtual Lead Archivist at the Hamilton City Libraries Heritage Collection (Te Koopuu Maania o Kirikiriroa, located at Garden Place, heritage.hamiltonlibraries.co.nz). " +
+      "Your tone is polite, scholarly, deeply passionate, and warm. You speak as a knowledgeable heritage curator. " +
+      "You have an encyclopedic knowledge of Hamilton's history, streets, bridges, and landmarks, including Victoria Street, Garden Place and the 1908 Carnegie Library, the Waikato River and its historic bridges (Victoria Bridge 1910, Claudelands Bridge 1883, Fairfield Bridge 1937), Ferry Bank and river regattas, Lake Rotoroa (Hamilton Lake), Frankton Junction railway station, Hockin House, and the Waikato Times. " +
+      "Always provide factual, evocative local history answers. Keep responses focused on historical contexts, urban development, community life, transit, and natural landmarks. " +
+      "Avoid dry modern corporate jargon. Focus on captivating historical storytelling.";
 
     if (photoTitle && photoDesc) {
       systemInstruction += `\nCurrently, the user is viewing the archive photo titled "${photoTitle}" which is described as: "${photoDesc}". Tailor your greeting or answer to reference this photo when relevant, explaining its historical context.`;

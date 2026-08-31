@@ -12,6 +12,8 @@ export interface Photo {
   coordinates: { x: number; y: number }; // Percentage coords (0-100) on our custom Hamilton Map
   historicalFact: string;
   tags: string[];
+  heritageUrl?: string; // Direct URL to the item on heritage.hamiltonlibraries.co.nz
+  sourceCollection?: string;
 }
 
 export interface Landmark {

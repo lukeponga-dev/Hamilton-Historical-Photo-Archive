@@ -19,18 +19,21 @@ export default function Header({ activeView, setActiveView, photosCount }: Heade
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] uppercase tracking-[0.3em] text-[#c5b358] font-bold">
-                Hamilton Public Library
+                Hamilton City Libraries
               </span>
               <span className="w-1.5 h-1.5 rounded-full bg-[#c5b358]/50"></span>
               <span className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-semibold">
-                Special Collections
+                Heritage Collections
               </span>
             </div>
             <h1 className="text-2xl md:text-3xl font-serif text-white tracking-tight font-light mt-0.5">
-              Hamilton <span className="text-[#c5b358] font-normal">Historical Photo Archive</span>
+              Hamilton <span className="text-[#c5b358] font-normal font-serif">Historical Photo Archive</span>
             </h1>
-            <p className="text-xs text-[#a1a1a1] font-mono mt-0.5">
-              Digital Preservation Portal • Curated Ledger of the Ambitious City (1880–1959)
+            <p className="text-xs text-[#c5b358]/80 font-serif italic mt-1 font-normal">
+              Digitally preserving Hamilton’s streets, people, and places.
+            </p>
+            <p className="text-[10px] text-[#a1a1a1] font-mono mt-1 opacity-60">
+              Heritage Online Archive (heritage.hamiltonlibraries.co.nz) • Curated Ledger
             </p>
           </div>
         </div>
@@ -46,7 +49,7 @@ export default function Header({ activeView, setActiveView, photosCount }: Heade
             }`}
           >
             <Grid className="w-3.5 h-3.5" />
-            <span><span className="hidden sm:inline">Archive </span>Ledger ({photosCount})</span>
+            <span>Photo Archive ({photosCount})</span>
           </button>
           
           <button
@@ -58,7 +61,7 @@ export default function Header({ activeView, setActiveView, photosCount }: Heade
             }`}
           >
             <Map className="w-3.5 h-3.5" />
-            <span><span className="hidden sm:inline">Cartographic </span>Map</span>
+            <span>Hamilton Map</span>
           </button>
 
           <button
@@ -70,7 +73,7 @@ export default function Header({ activeView, setActiveView, photosCount }: Heade
             }`}
           >
             <Compass className="w-3.5 h-3.5" />
-            <span>Ask Arthur<span className="hidden sm:inline"> (AI)</span></span>
+            <span>Ask the Archivist</span>
           </button>
         </div>
       </div>

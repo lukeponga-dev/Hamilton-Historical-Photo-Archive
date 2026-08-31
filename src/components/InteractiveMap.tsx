@@ -9,7 +9,7 @@ interface InteractiveMapProps {
 }
 
 export default function InteractiveMap({ onSelectPhoto, onFilterByLandmark }: InteractiveMapProps) {
-  const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(null);
+  const [selectedLandmark, setSelectedLandmark] = useState<Landmark | null>(HAMILTON_LANDMARKS[0]);
 
   // Get associated photos for a landmark
   const getLandmarkPhotos = (landmark: Landmark): Photo[] => {
@@ -35,8 +35,12 @@ export default function InteractiveMap({ onSelectPhoto, onFilterByLandmark }: In
             <span>Archival Photo Coordinates</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-4 h-0.5 bg-white/20 border-t border-dashed border-white/40"></span>
-            <span>Niagara Escarpment Mountain Line</span>
+            <span className="w-4 h-1 bg-[#29465b] rounded-full"></span>
+            <span>Waikato River Ribbon</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="w-4 h-0.5 bg-[#c5b358]/60 border-t border-dashed border-[#c5b358]"></span>
+            <span>Railway Corridor</span>
           </div>
         </div>
       </div>
@@ -47,43 +51,48 @@ export default function InteractiveMap({ onSelectPhoto, onFilterByLandmark }: In
           
           {/* Custom SVG Background map */}
           <svg className="absolute inset-0 w-full h-full text-white/5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-            {/* Water body: Hamilton Harbour / Burlington Bay */}
+            {/* Water body: The Winding Waikato River Ribbon */}
             <path 
-              d="M 25 0 Q 35 15 50 18 Q 65 20 80 15 Q 92 10 95 0 Z" 
-              fill="#101c26" 
-              stroke="#1b3040" 
-              strokeWidth="0.5" 
-            />
-            {/* Lake Ontario (Far Right) */}
-            <path 
-              d="M 95 0 Q 93 15 95 25 Q 97 35 100 45 L 100 0 Z" 
-              fill="#0d161f" 
-              stroke="#152433" 
-              strokeWidth="0.5" 
-            />
-            {/* Hamilton Beach Strip / Sandbar spit connecting the lighthouse */}
-            <path 
-              d="M 94 0 L 91 18 L 94 28 L 97 12 Z" 
-              fill="#1e1e1e" 
-              stroke="#333333" 
-              strokeWidth="0.25" 
-            />
-            
-            {/* Niagara Escarpment - The Mountain wall cut line */}
-            <path 
-              d="M 0 55 Q 15 62 30 65 Q 45 68 60 72 Q 80 75 100 78" 
+              d="M 58 0 Q 56 15 54 28 Q 50 42 54 58 Q 56 72 50 88 Q 46 95 44 100" 
               fill="none" 
-              stroke="#c5b358" 
-              strokeWidth="2.5" 
-              strokeOpacity="0.2"
+              stroke="#1b3040" 
+              strokeWidth="6" 
               strokeLinecap="round"
             />
             <path 
-              d="M 0 55 Q 15 62 30 65 Q 45 68 60 72 Q 80 75 100 78" 
+              d="M 58 0 Q 56 15 54 28 Q 50 42 54 58 Q 56 72 50 88 Q 46 95 44 100" 
+              fill="none" 
+              stroke="#29465b" 
+              strokeWidth="2.5" 
+              strokeLinecap="round"
+            />
+
+            {/* Lake Rotoroa (Hamilton Lake) */}
+            <ellipse 
+              cx="34" 
+              cy="64" 
+              rx="6" 
+              ry="4.5" 
+              fill="#101c26" 
+              stroke="#29465b" 
+              strokeWidth="0.75" 
+            />
+
+            {/* Railway Corridor (Frankton to Claudelands) */}
+            <path 
+              d="M 15 48 L 26 48 Q 45 46 62 38 L 85 30" 
               fill="none" 
               stroke="#c5b358" 
-              strokeWidth="1" 
-              strokeOpacity="0.6"
+              strokeWidth="1.5" 
+              strokeOpacity="0.3"
+              strokeLinecap="round"
+            />
+            <path 
+              d="M 15 48 L 26 48 Q 45 46 62 38 L 85 30" 
+              fill="none" 
+              stroke="#c5b358" 
+              strokeWidth="0.8" 
+              strokeOpacity="0.7"
               strokeDasharray="1.5 1.5"
               strokeLinecap="round"
             />
@@ -100,23 +109,23 @@ export default function InteractiveMap({ onSelectPhoto, onFilterByLandmark }: In
           </svg>
 
           {/* Aesthetic Geographical Text Labels */}
-          <div className="absolute top-[8%] left-[45%] text-[10px] font-serif uppercase tracking-[0.2em] font-semibold text-[#547c9c] italic rotate-[-5deg]">
-            Hamilton Harbour
+          <div className="absolute top-[8%] left-[58%] text-[10px] font-serif uppercase tracking-[0.2em] font-semibold text-[#547c9c] italic">
+            Waikato River
           </div>
-          <div className="absolute top-[12%] right-[2%] text-[10px] font-serif uppercase tracking-[0.2em] font-semibold text-[#547c9c] italic rotate-[90deg] origin-right">
-            Lake Ontario
+          <div className="absolute top-[48%] left-[52%] text-[9px] font-serif uppercase tracking-[0.15em] text-[#c5b358]/80 font-bold">
+            Victoria St & Central
           </div>
-          <div className="absolute bottom-[20%] right-[10%] text-[10px] font-serif uppercase tracking-[0.25em] font-semibold text-[#c5b358]/55">
-            The Mountain Summit
+          <div className="absolute top-[34%] right-[15%] text-[9px] font-mono uppercase tracking-[0.15em] text-white/40">
+            Claudelands East
           </div>
-          <div className="absolute bottom-[30%] left-[3%] text-[9px] font-mono uppercase tracking-[0.15em] text-white/30">
-            Niagara Escarpment Wall
+          <div className="absolute top-[44%] left-[10%] text-[9px] font-mono uppercase tracking-[0.15em] text-white/40">
+            Frankton Junction
           </div>
-          <div className="absolute top-[48%] left-[46%] text-[9px] font-serif uppercase tracking-[0.15em] text-white/40 font-bold">
-            Downtown Grid
+          <div className="absolute top-[68%] left-[24%] text-[9px] font-serif uppercase tracking-[0.15em] text-[#547c9c] italic">
+            Lake Rotoroa
           </div>
-          <div className="absolute top-[28%] left-[2%] text-[10px] font-serif uppercase tracking-[0.2em] text-[#c5b358]/70 font-semibold italic">
-            Dundas Valley
+          <div className="absolute top-[14%] left-[40%] text-[9px] font-mono uppercase tracking-[0.15em] text-white/30">
+            Fairfield Reach
           </div>
 
           {/* Landmarks Coordinate Pins */}
@@ -130,17 +139,14 @@ export default function InteractiveMap({ onSelectPhoto, onFilterByLandmark }: In
                 className="absolute -translate-x-1/2 -translate-y-1/2 group z-10 p-2 focus:outline-none focus:ring-1 focus:ring-[#c5b358] rounded-full"
               >
                 {/* Radial Pulse */}
-                <span className={`absolute inset-0 rounded-full bg-[#c5b358] opacity-20 transform scale-150 ${
-                  isSelected ? 'animate-ping' : 'group-hover:animate-ping'
-                }`}></span>
+                <span className={`absolute -inset-1 rounded-full bg-[#c5b358] opacity-30 transform scale-125 animate-pulse`}></span>
                 
-                {/* Pin Dot */}
-                <div className={`relative flex items-center justify-center w-6 h-6 rounded-full border border-[#080808] shadow-md transition-all duration-300 ${
+                {/* Pin Dot - small gold circle */}
+                <div className={`relative w-3.5 h-3.5 rounded-full border border-[#080808] shadow-[0_0_8px_rgba(197,179,88,0.4)] transition-all duration-300 ${
                   isSelected 
-                    ? 'bg-[#c5b358] text-[#080808] scale-125' 
-                    : 'bg-stone-800 text-[#e5e5e5] border-white/20 group-hover:bg-[#c5b358] group-hover:text-[#080808] group-hover:scale-110'
+                    ? 'bg-[#c5b358] scale-125 ring-2 ring-white/20' 
+                    : 'bg-[#c5b358]/80 group-hover:bg-[#c5b358] group-hover:scale-125'
                 }`}>
-                  <MapPin className="w-3.5 h-3.5" />
                 </div>
 
                 {/* Micro Tooltip */}
@@ -206,7 +212,7 @@ export default function InteractiveMap({ onSelectPhoto, onFilterByLandmark }: In
                 onClick={() => onFilterByLandmark(selectedLandmark.id)}
                 className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#c5b358] text-[#080808] text-[10px] uppercase tracking-widest font-mono font-bold rounded-xs hover:bg-[#c5b358]/95 transition-colors mt-4 cursor-pointer"
               >
-                Filter Archive to this Site
+                View related photos
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
