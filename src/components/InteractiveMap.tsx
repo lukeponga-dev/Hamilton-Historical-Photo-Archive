@@ -153,7 +153,7 @@ export default function InteractiveMap({ onSelectPhoto, onFilterByLandmark }: In
         </div>
 
         {/* Selected Landmark Inspector Detail Panel */}
-        <div className="bg-[#111] border border-white/10 rounded-xs p-5 flex flex-col justify-between shadow-sm min-h-[350px]">
+        <div className="bg-[#111] border border-white/10 rounded-xs p-5 flex flex-col justify-between shadow-sm min-h-[350px] lg:h-[500px] lg:overflow-y-auto">
           {selectedLandmark ? (
             <div className="flex flex-col h-full justify-between gap-4">
               {/* Landmark info */}

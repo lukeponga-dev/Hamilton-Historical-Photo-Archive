@@ -67,7 +67,7 @@ export default function PhotoCard({ photo, onSelect }: PhotoCardProps) {
           </div>
 
           {/* Title */}
-          <h3 className="font-serif font-light text-white group-hover:text-[#c5b358] transition-colors text-base line-clamp-1">
+          <h3 className="font-serif font-light text-white group-hover:text-[#c5b358] transition-colors text-base line-clamp-2 min-h-[3rem] leading-snug">
             {photo.title}
           </h3>
 

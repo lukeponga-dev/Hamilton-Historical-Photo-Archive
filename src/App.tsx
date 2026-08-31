@@ -20,6 +20,7 @@ export default function App() {
   // Modals and context
   const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
   const [chatReferencedPhoto, setChatReferencedPhoto] = useState<Photo | null>(null);
+  const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
   // Active filter by landmark IDs (from map interaction)
   const [activeLandmarkFilter, setActiveLandmarkFilter] = useState<string | null>(null);
@@ -190,10 +191,24 @@ export default function App() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             
             {/* Sidebar Controls (Filters & Curatorial Info) */}
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
+              
+              {/* Mobile Filter Toggle Button */}
+              <button 
+                onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+                className="lg:hidden w-full flex items-center justify-between px-4 py-3 bg-[#0c0c0c] border border-white/10 rounded-xs text-xs font-mono font-bold uppercase tracking-wider text-white hover:text-[#c5b358] transition-colors cursor-pointer"
+              >
+                <span className="flex items-center gap-2">
+                  <Filter className="w-4 h-4 text-[#c5b358]" />
+                  {isMobileFiltersOpen ? 'Hide Exploration Filters' : 'Show Exploration Filters'}
+                </span>
+                <span className="text-[10px] bg-white/5 border border-white/10 px-2 py-0.5 rounded text-white/50">
+                  {isAnyFilterActive ? 'Active Filters' : 'All Ledger'}
+                </span>
+              </button>
               
               {/* Filter Panel Card */}
-              <div className="bg-[#0c0c0c] border border-white/10 rounded-xs shadow-sm p-5 space-y-5">
+              <div className={`${isMobileFiltersOpen ? 'block' : 'hidden lg:block'} bg-[#0c0c0c] border border-white/10 rounded-xs shadow-sm p-5 space-y-5`}>
                 <div className="flex items-center justify-between border-b border-white/10 pb-3">
                   <h2 className="text-xs font-mono uppercase tracking-wider text-white/40 font-bold flex items-center gap-1.5">
                     <Filter className="w-4 h-4 text-[#c5b358]" />
@@ -495,17 +510,21 @@ export default function App() {
         )}
 
         {activeView === 'map' && (
-          <InteractiveMap 
-            onSelectPhoto={(photo) => setSelectedPhoto(photo)}
-            onFilterByLandmark={handleFilterByLandmark}
-          />
+          <div className="animate-fade-in">
+            <InteractiveMap 
+              onSelectPhoto={(photo) => setSelectedPhoto(photo)}
+              onFilterByLandmark={handleFilterByLandmark}
+            />
+          </div>
         )}
 
         {activeView === 'chat' && (
-          <ArchivistChat 
-            referencedPhoto={chatReferencedPhoto}
-            onClearReference={() => setChatReferencedPhoto(null)}
-          />
+          <div className="max-w-3xl mx-auto w-full animate-fade-in">
+            <ArchivistChat 
+              referencedPhoto={chatReferencedPhoto}
+              onClearReference={() => setChatReferencedPhoto(null)}
+            />
+          </div>
         )}
 
       </main>
