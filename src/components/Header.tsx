@@ -36,41 +36,41 @@ export default function Header({ activeView, setActiveView, photosCount }: Heade
         </div>
 
         {/* View Toggle Controls */}
-        <div className="flex items-center bg-[#111] p-1 rounded-md border border-white/10">
+        <div className="flex items-center bg-[#111] p-1 rounded-md border border-white/10 w-full md:w-auto overflow-x-auto justify-between md:justify-start">
           <button
             onClick={() => setActiveView('gallery')}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] uppercase tracking-widest transition-all duration-200 rounded-sm font-semibold cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 px-3 md:px-4 py-2 text-[9px] md:text-[10px] uppercase tracking-wider md:tracking-widest transition-all duration-200 rounded-sm font-semibold cursor-pointer shrink-0 ${
               activeView === 'gallery'
-                ? 'bg-[#c5b358] text-[#080808] shadow-sm'
+                ? 'bg-[#c5b358] text-[#080808] shadow-sm font-bold'
                 : 'text-[#e5e5e5]/60 hover:text-white hover:bg-white/5'
             }`}
           >
             <Grid className="w-3.5 h-3.5" />
-            Archive Ledger ({photosCount})
+            <span><span className="hidden sm:inline">Archive </span>Ledger ({photosCount})</span>
           </button>
           
           <button
             onClick={() => setActiveView('map')}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] uppercase tracking-widest transition-all duration-200 rounded-sm font-semibold cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 px-3 md:px-4 py-2 text-[9px] md:text-[10px] uppercase tracking-wider md:tracking-widest transition-all duration-200 rounded-sm font-semibold cursor-pointer shrink-0 ${
               activeView === 'map'
-                ? 'bg-[#c5b358] text-[#080808] shadow-sm'
+                ? 'bg-[#c5b358] text-[#080808] shadow-sm font-bold'
                 : 'text-[#e5e5e5]/60 hover:text-white hover:bg-white/5'
             }`}
           >
             <Map className="w-3.5 h-3.5" />
-            Cartographic Map
+            <span><span className="hidden sm:inline">Cartographic </span>Map</span>
           </button>
 
           <button
             onClick={() => setActiveView('chat')}
-            className={`flex items-center gap-2 px-4 py-2 text-[10px] uppercase tracking-widest transition-all duration-200 rounded-sm font-semibold cursor-pointer ${
+            className={`flex items-center justify-center gap-1.5 px-3 md:px-4 py-2 text-[9px] md:text-[10px] uppercase tracking-wider md:tracking-widest transition-all duration-200 rounded-sm font-semibold cursor-pointer shrink-0 ${
               activeView === 'chat'
-                ? 'bg-[#c5b358] text-[#080808] shadow-sm'
+                ? 'bg-[#c5b358] text-[#080808] shadow-sm font-bold'
                 : 'text-[#e5e5e5]/60 hover:text-white hover:bg-white/5'
             }`}
           >
             <Compass className="w-3.5 h-3.5" />
-            Ask Arthur (AI)
+            <span>Ask Arthur<span className="hidden sm:inline"> (AI)</span></span>
           </button>
         </div>
       </div>

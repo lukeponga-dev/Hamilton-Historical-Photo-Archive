@@ -283,20 +283,22 @@ export default function ArchivistChat({ referencedPhoto, onClearReference }: Arc
       </div>
 
       {/* Suggested Questions Section */}
-      <div className="bg-[#0c0c0c] border-t border-white/10 p-3 flex flex-wrap gap-2 items-center">
-        <span className="text-[10px] font-mono uppercase tracking-wider text-[#c5b358] font-bold mr-1 flex items-center gap-1">
+      <div className="bg-[#0c0c0c] border-t border-white/10 p-3 flex flex-col sm:flex-row sm:items-center gap-2">
+        <span className="text-[10px] font-mono uppercase tracking-wider text-[#c5b358] font-bold shrink-0 flex items-center gap-1">
           <BookOpen className="w-3 h-3" /> Suggested:
         </span>
-        {PRESET_INQUIRIES.map((inq, index) => (
-          <button
-            key={index}
-            disabled={isLoading}
-            onClick={() => sendMessage(inq.text)}
-            className="text-[11px] font-mono text-white/70 bg-[#111] hover:bg-white/5 border border-white/10 rounded-full px-3 py-1 transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer"
-          >
-            {inq.label}
-          </button>
-        ))}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none whitespace-nowrap snap-x">
+          {PRESET_INQUIRIES.map((inq, index) => (
+            <button
+              key={index}
+              disabled={isLoading}
+              onClick={() => sendMessage(inq.text)}
+              className="text-[11px] font-mono text-[#e5e5e5]/80 bg-[#111] hover:bg-white/5 border border-white/10 rounded-full px-3 py-1 transition-all disabled:opacity-50 disabled:pointer-events-none cursor-pointer shrink-0 snap-start"
+            >
+              {inq.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Input Form */}

@@ -120,7 +120,7 @@ export default function PhotoDetailModal({ photo, onClose, onConsultArthur }: Ph
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-6 animate-fade-in">
       {/* Modal Main Panel */}
-      <div className="bg-[#0c0c0c] border border-white/10 rounded-xs shadow-2xl max-w-5xl w-full max-h-[90vh] md:max-h-[85vh] overflow-hidden flex flex-col md:flex-row relative">
+      <div className="bg-[#0c0c0c] border border-white/10 rounded-xs shadow-2xl max-w-5xl w-full max-h-none md:max-h-[85vh] overflow-y-auto md:overflow-hidden flex flex-col md:flex-row relative">
         
         {/* Close Button absolute */}
         <button
