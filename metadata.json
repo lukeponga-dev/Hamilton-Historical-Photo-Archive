@@ -1,0 +1,6 @@
+{
+  "name": "Hamilton Historical Photo Archive",
+  "description": "A curated digital museum of vintage Hamilton, Ontario archival photographs, featuring an interactive timeline, landmark cartography map, and an AI historical archivist with dynamic spoken voice narration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
